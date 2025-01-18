@@ -3,74 +3,66 @@ package main;
 import Inputs.KeyboardInputs;
 import Inputs.MouseInputs;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
 
 public class GamePanel extends JPanel {
 
-    final private MouseInputs mouseInputs = new MouseInputs(this);
     private float xDelta = 100, yDelta = 100;
-    private float xDir = 0.8f, yDir = 0.8f;
-    private int frames = 0;
-    private long lastCheck = 0;
-    private Color color = new Color(125, 13, 12);
-    private Random random;
+    private BufferedImage img, subImg;
 
-    public GamePanel(){
+    public GamePanel() {
+
+
+        importImage();
+
+        MouseInputs mouseInputs = new MouseInputs(this);
+        setPanelSize();
         addKeyListener(new KeyboardInputs(this));
         addMouseListener(mouseInputs);
         addMouseMotionListener(mouseInputs);
-        random = new Random();
     }
 
-    public void changeXDelta(int xDelta){
+    private void importImage() {
+        InputStream is = getClass().getResourceAsStream("/player_sprites.png");
+
+        try {
+            img = ImageIO.read(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setPanelSize() {
+        setPreferredSize(new Dimension(1200, 800));
+    }
+
+    public void changeXDelta(int xDelta) {
         this.xDelta += xDelta;
     }
 
-    public void changeYDelta(int yDelta){
+    public void changeYDelta(int yDelta) {
         this.yDelta += yDelta;
 
     }
 
-    public void setRectPosition(int x, int y){
+    public void setRectPosition(int x, int y) {
         this.xDelta = x;
         this.yDelta = y;
 
     }
 
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        updateRectangle();
-        g.setColor(color);
-        g.fillRect((int) xDelta, (int) yDelta, 200, 50);
-
-
+        subImg = img.getSubimage(1*64, 8*40, 64, 40);
+        g.drawImage(subImg, (int) xDelta, (int) yDelta, 128, 80, null);
 
     }
-
-    private void updateRectangle() {
-        xDelta += xDir;
-        if(xDelta > 400 || xDelta < 0){
-            xDir *= -1;
-            color = getRndColor();
-        }
-
-        yDelta += yDir;
-        if(yDelta > 400 || yDelta < 0){
-            yDir *= -1;
-            color = getRndColor();
-        }
-    }
-
-    private Color getRndColor() {
-        int r = random.nextInt(255);
-        int b = random.nextInt(255);
-        int g = random.nextInt(255);
-
-        return new Color(r, b, g);
-    }
-
 
 }
