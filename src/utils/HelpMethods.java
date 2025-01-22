@@ -2,6 +2,9 @@ package utils;
 
 import main.Game;
 
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+
 public class HelpMethods {
     public static boolean canMoveHere(float x, float y, float width, float height, int[][] lvlData) {
 
@@ -31,5 +34,18 @@ public class HelpMethods {
         return value >= 48 || value < 0 || value != 11;
 
 
+    }
+
+    public static float getEntityXPosNextToWall(Rectangle2D.Float hitBox, float xSpeed) {
+        int currentTile = (int) (hitBox.x / Game.TILES_SIZE);
+        if (xSpeed > 0){
+            // Right
+            int tileXPos = currentTile * Game.TILES_SIZE;
+            int xOffset = (int) ( Game.TILES_SIZE - hitBox.width);
+            return tileXPos + xOffset - 1;
+        } else {
+            // Left
+            return currentTile * Game.TILES_SIZE;
+        }
     }
 }
